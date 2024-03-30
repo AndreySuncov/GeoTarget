@@ -8,4 +8,4 @@
 
 Схема архитектуры приложения:
 
-![GeoTarget схема](https://github.com/AndreySuncov/GeoTarget/assets/90787187/66160ba8-3aed-40f5-9349-635d448b2ca2)
+![GeoTargetСхема](https://github.com/AndreySuncov/GeoTarget/assets/91022182/329f2057-4fe2-43ff-bb6f-de4777f8ae26)
