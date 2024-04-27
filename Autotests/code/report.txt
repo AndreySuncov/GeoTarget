@@ -1,0 +1,235 @@
+API_testing-master/tests/test_objects.py FFF..F..........                                                                                                            [100%]
+
+================================================================================= FAILURES =================================================================================
+_______________________________________________________________________ TestObjects.test_get_objects _______________________________________________________________________
+
+self = <test_objects.TestObjects object at 0x105eb0430>, client = <api.api_client.ApiClient object at 0x105eb2c20>
+request = <FixtureRequest for <Function test_get_objects>>
+
+    def test_get_objects(self, client, request):
+        """
+        получение заранее заготовленных объектов из базы с параметрами по-умолчанию,
+        GET /objects
+        """
+        # получаем объекты из базы
+        response = get_objects(client)
+
+        # убеждаемся, что в ответ пришли объекты, которые мы ожидаем
+        assert_status_code(response, HTTPStatus.OK)
+>       assert_response_body_fields(request, response)
+
+/Applications/Programming/projects/Quality/API_testing-master/tests/test_objects.py:35:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/Applications/Programming/projects/Quality/API_testing-master/assertions/assertion_base.py:162: in assert_response_body_fields
+    assert_left_in_right_json(response, exp_json, act_json)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [200 OK]>
+exp_json = [{'data': {'capacity': '128 GB', 'color': 'Cloudy White'}, 'name': 'Google Pixel 6 Pro'}, {'data': None, 'name': 'Appl...89.99}, 'name': 'Samsung Galaxy Z Fold2'}, {'data': {'generation': '3rd', 'price': 120}, 'name': 'Apple AirPods'}, ...]
+actual_json = [{'data': {'color': 'Purple', 'price': 389.99}, 'name': 'Apple iPhone 11, 64GB'}, {'data': {'color': 'Brown', 'price':... 'Apple iPad Air'}, {'data': {'Capacity': '256 GB', 'Generation': '4th', 'Price': '519.99'}, 'name': 'Apple iPad Air'}]
+
+    def assert_left_in_right_json(response, exp_json, actual_json):
+        """
+        проверяет, что все значения полей exp_json равны значениям полей в actual_json
+        :param response: полученный ответ от сервера
+        :param exp_json: ожидаемый эталонный json
+        :param actual_json: полученый json
+        :raises AssertionError: если в exp_json есть поля со значениями, которые отличаются или которых нет в actual_json
+        """
+        root = 'root:' if isinstance(actual_json, list) else ''
+        compare_res = compare_json_left_in_right(exp_json, actual_json, key=root, path=root)
+>       assert not compare_res, BodyLogMsg(response) \
+            .add_compare_result(compare_res) \
+            .add_request_url() \
+            .add_response_info() \
+            .get_message()
+E       AssertionError: В ТЕЛЕ ОТВЕТА в json следующие поля не совпали с эталоном:
+E       ключ: root
+E                       expected: [{'name': 'Google Pixel 6 Pro', 'data': {'color': 'Cloudy White', 'capacity': '128 GB'}}, {'name': 'Apple iPhone 12 Mini, 256GB, Blue', 'data': None}, {'name': 'Apple iPhone 12 Pro Max', 'data': {'color': 'Cloudy White', 'capacity GB': 512}}, {'name': 'Apple iPhone 11, 64GB', 'data': {'price': 389.99, 'color': 'Purple'}}, {'name': 'Samsung Galaxy Z Fold2', 'data': {'price': 689.99, 'color': 'Brown'}}, {'name': 'Apple AirPods', 'data': {'generation': '3rd', 'price': 120}}, {'name': 'Apple MacBook Pro 16', 'data': {'year': 2019, 'price': 1849.99, 'CPU model': 'Intel Core i9', 'Hard disk size': '1 TB'}}, {'name': 'Apple Watch Series 8', 'data': {'Strap Colour': 'Elderberry', 'Case Size': '41mm'}}, {'name': 'Beats Studio3 Wireless', 'data': {'Color': 'Red', 'Description': 'High-performance wireless noise cancelling headphones'}}, {'name': 'Apple iPad Mini 5th Gen', 'data': {'Capacity': '64 GB', 'Screen size': 7.9}}, {'name': 'Apple iPad Mini 5th Gen', 'data': {'Capacity': '254 GB', 'Screen size': 7.9}}, {'name': 'Apple iPad Air', 'data': {'Generation': '4th', 'Price': '419.99', 'Capacity': '64 GB'}}, {'name': 'Apple iPad Air', 'data': {'Generation': '4th', 'Price': '519.99', 'Capacity': '256 GB'}}]
+E                       actual: [{'name': 'Apple iPhone 11, 64GB', 'data': {'price': 389.99, 'color': 'Purple'}}, {'name': 'Samsung Galaxy Z Fold2', 'data': {'price': 689.99, 'color': 'Brown'}}, {'name': 'Apple AirPods', 'data': {'generation': '3rd', 'price': 120}}, {'name': 'Apple iPad Mini 5th Gen', 'data': {'Capacity': '64 GB', 'Screen size': 7.9}}, {'name': 'Apple iPad Air', 'data': {'Generation': '4th', 'Price': '419.99', 'Capacity': '64 GB'}}, {'name': 'Apple iPad Air', 'data': {'Generation': '4th', 'Price': '519.99', 'Capacity': '256 GB'}}]
+E       Содержимое отправляемого запроса (url, query params, тело):
+E               URL: https://api.restful-api.dev/objects
+E               method: GET
+E               headers: {'host': 'api.restful-api.dev', 'accept': '*/*', 'accept-encoding': 'gzip, deflate', 'connection': 'keep-alive', 'user-agent': 'python-httpx/0.24.1'}
+E               query params:
+E               body:
+E       Тело ответа:
+E               b'[{"id":"4","name":"Apple iPhone 11, 64GB","data":{"price":389.99,"color":"Purple"}},{"id":"5","name":"Samsung Galaxy Z Fold2","data":{"price":689.99,"color":"Brown"}},{"id":"6","name":"Apple AirPods","data":{"generation":"3rd","price":120}},{"id":"10","name":"Apple iPad Mini 5th Gen","data":{"Capacity":"64 GB","Screen size":7.9}},{"id":"12","name":"Apple iPad Air","data":{"Generation":"4th","Price":"419.99","Capacity":"64 GB"}},{"id":"13","name":"Apple iPad Air","data":{"Generation":"4th","Price":"519.99","Capacity":"256 GB"}}]'
+
+/Applications/Programming/projects/Quality/API_testing-master/assertions/assertion_base.py:145: AssertionError
+---------------------------------------------------------------------------- Captured log setup ----------------------------------------------------------------------------
+INFO     custom_loger:conftest.py:30 test_get_objects:
+---------------------------------------------------------------------------- Captured log call -----------------------------------------------------------------------------
+INFO     custom_loger:api_client.py:25 GET /objects
+______________________________________________________________ TestObjects.test_get_objects_id_param[param0] _______________________________________________________________
+
+self = <test_objects.TestObjects object at 0x105eb0880>, client = <api.api_client.ApiClient object at 0x105eb2c20>
+request = <FixtureRequest for <Function test_get_objects_id_param[param0]>>, param = {'ids': [1], 'index': 0}
+
+    @pytest.mark.parametrize("param", [{"index": 0, "ids": [1]}, {"index": 1, "ids": [1, 2]}])
+    def test_get_objects_id_param(self, client, request, param):
+        """
+        получение заранее заготовленных объектов из базы с параметром ids,
+        GET /objects
+        """
+        # получаем массив объектов с определенными айдишниками
+        response = get_objects(client, *param['ids'])
+
+        # убеждаемся, что в ответ пришли именно те объекты, id которых мы запросили
+        assert_status_code(response, HTTPStatus.OK)
+>       should_be_valid_objects_response(request, response, param)
+
+/Applications/Programming/projects/Quality/API_testing-master/tests/test_objects.py:48:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/Applications/Programming/projects/Quality/API_testing-master/assertions/objects_assertion.py:12: in should_be_valid_objects_response
+    assert_response_body_value(response, exp_len, act_len,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [200 OK]>, exp = 1, act = 0, text = 'ОЖИДАЕМОЕ КОЛИЧЕСТВО ОБЪЕКТОВ НЕ СОВПАЛО С ФАКТИЧЕСКИМ'
+
+    def assert_response_body_value(response, exp, act, text=None):
+        """
+        проверяет ответ от сервера, сравнивая полученное значение с ожидаемым для тела запроса
+        :param response: ответ от сервера
+        :param exp: ожидаемое значение
+        :param act: полученное значение
+        :param text: дополнительный текст, который необходимо вывести при несовпадении exp и act
+        """
+>       assert exp == act, BodyValueLogMsg(response) \
+            .add_error_info(text) \
+            .add_compare_result(exp, act) \
+            .add_request_url() \
+            .add_response_info() \
+            .get_message()
+E       AssertionError:
+E       ОЖИДАЕМОЕ КОЛИЧЕСТВО ОБЪЕКТОВ НЕ СОВПАЛО С ФАКТИЧЕСКИМ
+E               exptected: 1
+E               actual: 0
+E       Содержимое отправляемого запроса (url, query params, тело):
+E               URL: https://api.restful-api.dev/objects?id=1
+E               method: GET
+E               headers: {'host': 'api.restful-api.dev', 'accept': '*/*', 'accept-encoding': 'gzip, deflate', 'connection': 'keep-alive', 'user-agent': 'python-httpx/0.24.1'}
+E               query params:
+E               body:
+E       Тело ответа:
+E               b'[]'
+
+/Applications/Programming/projects/Quality/API_testing-master/assertions/assertion_base.py:173: AssertionError
+---------------------------------------------------------------------------- Captured log setup ----------------------------------------------------------------------------
+INFO     custom_loger:conftest.py:30 test_get_objects_id_param[param0]:
+---------------------------------------------------------------------------- Captured log call -----------------------------------------------------------------------------
+INFO     custom_loger:api_client.py:25 GET /objects
+______________________________________________________________ TestObjects.test_get_objects_id_param[param1] _______________________________________________________________
+
+self = <test_objects.TestObjects object at 0x105eb3cd0>, client = <api.api_client.ApiClient object at 0x105eb2c20>
+request = <FixtureRequest for <Function test_get_objects_id_param[param1]>>, param = {'ids': [1, 2], 'index': 1}
+
+    @pytest.mark.parametrize("param", [{"index": 0, "ids": [1]}, {"index": 1, "ids": [1, 2]}])
+    def test_get_objects_id_param(self, client, request, param):
+        """
+        получение заранее заготовленных объектов из базы с параметром ids,
+        GET /objects
+        """
+        # получаем массив объектов с определенными айдишниками
+        response = get_objects(client, *param['ids'])
+
+        # убеждаемся, что в ответ пришли именно те объекты, id которых мы запросили
+        assert_status_code(response, HTTPStatus.OK)
+>       should_be_valid_objects_response(request, response, param)
+
+/Applications/Programming/projects/Quality/API_testing-master/tests/test_objects.py:48:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/Applications/Programming/projects/Quality/API_testing-master/assertions/objects_assertion.py:12: in should_be_valid_objects_response
+    assert_response_body_value(response, exp_len, act_len,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [200 OK]>, exp = 2, act = 0, text = 'ОЖИДАЕМОЕ КОЛИЧЕСТВО ОБЪЕКТОВ НЕ СОВПАЛО С ФАКТИЧЕСКИМ'
+
+    def assert_response_body_value(response, exp, act, text=None):
+        """
+        проверяет ответ от сервера, сравнивая полученное значение с ожидаемым для тела запроса
+        :param response: ответ от сервера
+        :param exp: ожидаемое значение
+        :param act: полученное значение
+        :param text: дополнительный текст, который необходимо вывести при несовпадении exp и act
+        """
+>       assert exp == act, BodyValueLogMsg(response) \
+            .add_error_info(text) \
+            .add_compare_result(exp, act) \
+            .add_request_url() \
+            .add_response_info() \
+            .get_message()
+E       AssertionError:
+E       ОЖИДАЕМОЕ КОЛИЧЕСТВО ОБЪЕКТОВ НЕ СОВПАЛО С ФАКТИЧЕСКИМ
+E               exptected: 2
+E               actual: 0
+E       Содержимое отправляемого запроса (url, query params, тело):
+E               URL: https://api.restful-api.dev/objects?id=1&id=2
+E               method: GET
+E               headers: {'host': 'api.restful-api.dev', 'accept': '*/*', 'accept-encoding': 'gzip, deflate', 'connection': 'keep-alive', 'user-agent': 'python-httpx/0.24.1'}
+E               query params:
+E               body:
+E       Тело ответа:
+E               b'[]'
+
+/Applications/Programming/projects/Quality/API_testing-master/assertions/assertion_base.py:173: AssertionError
+---------------------------------------------------------------------------- Captured log setup ----------------------------------------------------------------------------
+INFO     custom_loger:conftest.py:30 test_get_objects_id_param[param1]:
+---------------------------------------------------------------------------- Captured log call -----------------------------------------------------------------------------
+INFO     custom_loger:api_client.py:25 GET /objects
+_______________________________________________________________________ TestObjects.test_get_object ________________________________________________________________________
+
+self = <test_objects.TestObjects object at 0x105eb34f0>, client = <api.api_client.ApiClient object at 0x105eb2c20>
+request = <FixtureRequest for <Function test_get_object>>
+
+    def test_get_object(self, client, request):
+        """
+        получение заранее заготовленного объекта из базы,
+        GET /objects/{id}
+        """
+        # получаем единичный объект с сервера
+        response = get_object(client, 7)
+
+        # убеждаемся, что получен именно тот объект, который мы запросили
+>       assert_status_code(response, HTTPStatus.OK)
+
+/Applications/Programming/projects/Quality/API_testing-master/tests/test_objects.py:83:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+response = <Response [404 Not Found]>, expected_code = <HTTPStatus.OK: 200>
+
+    def assert_status_code(response, expected_code):
+        """
+        сравнивает код ответа от сервера с ожидаемым
+        :param response: полученный от сервера ответ
+        :param expected_code: ожидаемый код ответа
+        :raises AssertionError: если значения не совпали
+        """
+>       assert expected_code == response.status_code, CodeLogMsg(response) \
+            .add_compare_result(expected_code, response.status_code) \
+            .add_request_url() \
+            .add_response_info() \
+            .get_message()
+E       AssertionError: В КОДЕ ОТВЕТА
+E               ожидался код: 200
+E               полученный код: 404
+E       Содержимое отправляемого запроса (url, query params, тело):
+E               URL: https://api.restful-api.dev/objects/7
+E               method: GET
+E               headers: {'host': 'api.restful-api.dev', 'accept': '*/*', 'accept-encoding': 'gzip, deflate', 'connection': 'keep-alive', 'user-agent': 'python-httpx/0.24.1'}
+E               query params:
+E               body:
+E       Тело ответа:
+E               b'{"error":"Oject with id=7 was not found."}'
+
+/Applications/Programming/projects/Quality/API_testing-master/assertions/assertion_base.py:113: AssertionError
+---------------------------------------------------------------------------- Captured log setup ----------------------------------------------------------------------------
+INFO     custom_loger:conftest.py:30 test_get_object:
+---------------------------------------------------------------------------- Captured log call -----------------------------------------------------------------------------
+INFO     custom_loger:api_client.py:25 GET /objects/7
+========================================================================= short test summary info ==========================================================================
+FAILED API_testing-master/tests/test_objects.py::TestObjects::test_get_objects - AssertionError: В ТЕЛЕ ОТВЕТА в json следующие поля не совпали с эталоном:
+FAILED API_testing-master/tests/test_objects.py::TestObjects::test_get_objects_id_param[param0] - AssertionError:
+FAILED API_testing-master/tests/test_objects.py::TestObjects::test_get_objects_id_param[param1] - AssertionError:
+FAILED API_testing-master/tests/test_objects.py::TestObjects::test_get_object - AssertionError: В КОДЕ ОТВЕТА
+====================================================================== 4 failed, 12 passed in 18.96s =======================================================================
